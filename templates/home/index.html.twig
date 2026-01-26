@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NBA Players{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold">🏀 NBA Legends</h1>
+            <p class="lead text-muted">Explora las estadísticas de tus jugadores favoritos</p>
+        </div>
+
+        <div class="row">
+            {% for element in elements %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        {# Imagen del jugador #}
+                        <img src="{{ element.image }}" class="card-img-top" alt="{{ element.name }}" style="height: 350px; object-fit: cover; object-position: top;">
+
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title m-0 fw-bold">{{ element.name }}</h5>
+                                <span class="badge bg-secondary">{{ element.number }}</span>
+                            </div>
+                            <h6 class="card-subtitle mb-3 text-muted">{{ element.team }}</h6>
+                            <p class="card-text small text-muted">
+                                {{ element.position }}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 pb-3">
+                            {# AQUÍ ESTÁ LA CLAVE: El enlace usa path() con el ID del jugador #}
+                            <a href="{{ path('app_player_show', {'id': element.id}) }}" class="btn btn-primary w-100">
+                                Ver ficha completa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    No hay jugadores en la base de datos. ¡Ejecuta el comando de importación!
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

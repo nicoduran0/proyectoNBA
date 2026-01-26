@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ element.name }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        {# Botón para volver atrás #}
+        <a href="{{ path('app_home') }}" class="btn btn-outline-secondary mb-4">&larr; Volver al listado</a>
+
+        <div class="row">
+            {# Columna Izquierda: Foto grande #}
+            <div class="col-md-5">
+                <div class="card shadow-lg border-0">
+                    <img src="{{ element.image }}" alt="{{ element.name }}" class="card-img-top">
+                    <div class="card-body text-center bg-dark text-white">
+                        <h2 class="m-0">{{ element.number }}</h2>
+                        <span class="badge bg-warning text-dark">{{ element.position }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Columna Derecha: Información #}
+            <div class="col-md-7">
+                <h1 class="display-4 fw-bold">{{ element.name }}</h1>
+                <h3 class="text-muted mb-4">{{ element.team }}</h3>
+
+                <div class="p-4 bg-light rounded shadow-sm mb-4">
+                    <h5 class="text-primary">Estadísticas actuales</h5>
+                    <p class="lead font-weight-bold">{{ element.stats }}</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-white fw-bold">
+                        Información Adicional
+                    </div>
+                    <div class="card-body">
+                        {# nl2br sirve para respetar los saltos de línea del texto #}
+                        <p class="card-text">{{ element.description|nl2br }}</p>
+                    </div>
+                </div>
+
+                {% if element.apiId %}
+                    <small class="text-muted mt-3 d-block">ID de Referencia API: {{ element.apiId }}</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
