@@ -1,44 +1,129 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}NBA Players{% endblock %}
+{% block title %}NBA Project Home{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <div class="text-center mb-5">
-            <h1 class="display-4 fw-bold">🏀 NBA Legends</h1>
-            <p class="lead text-muted">Explora las estadísticas de tus jugadores favoritos</p>
+    <style>
+        /* --- TRUCO IMPORTANTE --- */
+        /* Esto sobreescribe el color blanco del base.html.twig SOLO en esta página */
+        body {
+            background-color: #212529 !important;
+        }
+
+        /* ESTILOS ESPECÍFICOS PARA ESTA PÁGINA */
+        .nba-dashboard {
+            min-height: calc(100vh - 76px); /* Restamos la altura aprox del navbar */
+
+            /* Imagen de fondo */
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("{{ asset('images/fondo-nba.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            margin-top: -1px; /* Sube un pixel para tapar cualquier hueco */
+        }
+
+        .main-title {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .main-title h1 {
+            margin: 0;
+            color: #cf5606;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 2rem;
+        }
+
+        .main-title p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* --- TARJETAS --- */
+        .card-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 180px;
+            border-radius: 20px;
+            text-decoration: none;
+            background-color: rgba(255, 255, 255, 0.95);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .card-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            background-color: #ffffff;
+        }
+
+        .card-icon { font-size: 3.5rem; margin-bottom: 10px; }
+        .card-text { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Colores de texto */
+        .style-blue { color: #000000; border-bottom: 5px solid #000000; }
+        .style-blue:hover { border: 2px solid #000000; }
+
+        .style-red  { color: #000000; border-bottom: 5px solid #000000; }
+        .style-red:hover { border: 2px solid #000000; }
+
+        .style-orange { color: #000000; border-bottom: 5px solid #000000; }
+        .style-orange:hover { border: 2px solid #000000; }
+
+        .style-purple { color: #000000; border-bottom: 5px solid #000000; }
+        .style-purple:hover { border: 2px solid #000000; }
+
+    </style>
+
+    <div class="nba-dashboard">
+        <div class="main-title">
+            <h1>PROYECTO NBA</h1>
         </div>
 
-        <div class="row">
-            {% for element in elements %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm border-0">
-                        {# Imagen del jugador #}
-                        <img src="{{ element.image }}" class="card-img-top" alt="{{ element.name }}" style="height: 350px; object-fit: cover; object-position: top;">
+        <div class="dashboard-grid">
+            <a href="{{ path('app_player_list') }}" class="card-btn style-blue">
+                <div class="card-icon">🏀</div>
+                <div class="card-text">JUGADORES</div>
+            </a>
 
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title m-0 fw-bold">{{ element.name }}</h5>
-                                <span class="badge bg-secondary">{{ element.number }}</span>
-                            </div>
-                            <h6 class="card-subtitle mb-3 text-muted">{{ element.team }}</h6>
-                            <p class="card-text small text-muted">
-                                {{ element.position }}
-                            </p>
-                        </div>
-                        <div class="card-footer bg-white border-top-0 pb-3">
-                            {# AQUÍ ESTÁ LA CLAVE: El enlace usa path() con el ID del jugador #}
-                            <a href="{{ path('app_player_show', {'id': element.id}) }}" class="btn btn-primary w-100">
-                                Ver ficha completa
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="alert alert-warning">
-                    No hay jugadores en la base de datos. ¡Ejecuta el comando de importación!
-                </div>
-            {% endfor %}
+            <a href="#" class="card-btn style-red" onclick="alert('Próximamente: Rankings de la temporada')">
+                <div class="card-icon">🏆</div>
+                <div class="card-text">RANKINGS</div>
+            </a>
+
+            <a href="{{ path('app_element_index') }}" class="card-btn style-orange">
+                <div class="card-icon">⚙️</div>
+                <div class="card-text">ADMIN PANEL</div>
+            </a>
+
+            <a href="#" class="card-btn style-purple" onclick="alert('Próximamente: Estadísticas avanzadas')">
+                <div class="card-icon">📊</div>
+                <div class="card-text">STATS API</div>
+            </a>
         </div>
     </div>
 {% endblock %}

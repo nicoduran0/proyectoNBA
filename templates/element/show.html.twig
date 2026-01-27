@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Element{% endblock %}
+
+{% block body %}
+    <h1>Element</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ element.id }}</td>
+            </tr>
+            <tr>
+                <th>Stats</th>
+                <td>{{ element.stats }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ element.description }}</td>
+            </tr>
+            <tr>
+                <th>Number</th>
+                <td>{{ element.number }}</td>
+            </tr>
+            <tr>
+                <th>ApiId</th>
+                <td>{{ element.apiId }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ element.name }}</td>
+            </tr>
+            <tr>
+                <th>Team</th>
+                <td>{{ element.team }}</td>
+            </tr>
+            <tr>
+                <th>Position</th>
+                <td>{{ element.position }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ element.image }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_element_index') }}">back to list</a>
+
+    <a href="{{ path('app_element_edit', {'id': element.id}) }}">edit</a>
+
+    {{ include('element/_delete_form.html.twig') }}
+{% endblock %}

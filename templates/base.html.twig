@@ -2,30 +2,102 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    <title>{% block title %}NBA Project{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🏀</text></svg>">
 
-    {# --- AQUÍ ESTÁ LA MAGIA: CSS de Bootstrap --- #}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    {# Bootstrap CDN #}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     {% block stylesheets %}
-    {% endblock %}
+        <style>
+            /* --- FONDO GLOBAL PARA EL RESTO DE PÁGINAS --- */
+            body {
+                background-color: #ffffff; /* Volvemos al blanco para las tablas y formularios */
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+            }
 
-    {% block javascripts %}
+            /* --- ESTILO DEL NAVBAR (Gris Oscuro SIEMPRE) --- */
+            .navbar {
+                background-color: #212529 !important; /* Gris oscuro */
+                border-bottom: none !important;
+                padding: 15px 20px;
+            }
+
+            .navbar-brand {
+                font-weight: bold;
+                color: white !important;
+                font-size: 1.3rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            /* Botones del menú */
+            .btn-nav-custom {
+                border-radius: 20px;
+                padding: 6px 20px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                text-decoration: none;
+                margin-left: 10px;
+                transition: transform 0.2s;
+            }
+            .btn-nav-custom:hover {
+                transform: scale(1.05);
+            }
+
+            .btn-login-nav {
+                background-color: #1d428a;
+                color: white;
+                border: 1px solid #1d428a;
+            }
+
+            .btn-register-nav {
+                background-color: #198754;
+                color: white;
+                border: 1px solid #198754;
+            }
+        </style>
     {% endblock %}
 </head>
-<body class="bg-light"> {# Le puse un fondo gris muy clarito para que resalten las cartas #}
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('app_home') }}">
+            <span style="font-size: 1.5rem;">🏀</span> NBA
+        </a>
 
-{# Barra de navegación sencilla #}
-<nav class="navbar navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="{{ path('app_home') }}">🏀 NBA App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                {% if app.user %}
+                    <li class="nav-item">
+                        <span class="nav-link text-white">Hola, {{ app.user.userIdentifier }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_logout') }}" class="btn btn-danger btn-sm ms-3 rounded-pill px-3">Salir</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{{ path('app_login') }}" class="btn-nav-custom btn-login-nav">INICIAR SESIÓN</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_register') }}" class="btn-nav-custom btn-register-nav">REGISTRARSE</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </nav>
 
 {% block body %}{% endblock %}
 
-{# --- Scripts de Bootstrap (para que funcionen menús y efectos) --- #}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block javascripts %}{% endblock %}
 </body>
 </html>

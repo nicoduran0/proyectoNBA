@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jugadores NBA{% endblock %}
+
+{% block body %}
+    <div class="container" style="padding: 40px;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1 style="color: #cf5606; font-weight: bold;">LISTA DE JUGADORES</h1>
+            <a href="{{ path('app_home') }}" class="btn btn-secondary">Volver al Inicio</a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+            {% for element in elements %}
+                <div style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.2s;">
+
+                    {% if element.image %}
+                        <img src="{{ element.image }}" alt="{{ element.name }}" style="width:100%; height:200px; object-fit:cover;">
+                    {% else %}
+                        <div style="height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                            🏀
+                        </div>
+                    {% endif %}
+
+                    <div style="padding: 15px;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 1.2rem;">{{ element.name }}</h3>
+
+                        <p style="color: #666; font-size: 0.9rem;">
+                            Equipo: <strong>{{ element.team|default('N/A') }}</strong><br>
+                            Posición: {{ element.position|default('N/A') }}
+                        </p>
+
+                        <a href="{{ path('app_player_show', {id: element.id}) }}" style="display: block; text-align: center; width: 100%; padding: 8px; background-color: #1d428a; color: white; text-decoration: none; border-radius: 5px;">
+                            Ver Ficha Completa
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <p>No hay jugadores registrados todavía.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
