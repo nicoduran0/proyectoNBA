@@ -61,6 +61,13 @@ class Element
         $this->rankings = new ArrayCollection();
     }
 
+    // --- ESTO ES LO QUE NECESITABAS PARA EASYADMIN ---
+    public function __toString(): string
+    {
+        return (string) $this->name;
+    }
+    // -------------------------------------------------
+
     public function getId(): ?int
     {
         return $this->id;
@@ -229,5 +236,23 @@ class Element
         }
 
         return $this;
+    }
+
+    public function getCalculatedAverage(): float
+    {
+        $ratings = $this->getRatings();
+
+        if ($ratings->isEmpty()) {
+            return 0.0;
+        }
+
+        $total = 0;
+        foreach ($ratings as $rating) {
+            // Asegúrate de que Rating tiene un método getScore o getValue
+            // Si en Rating la propiedad es 'value', usa getScore() si hiciste un alias o getValue()
+            $total += $rating->getScore();
+        }
+
+        return $total / $ratings->count();
     }
 }

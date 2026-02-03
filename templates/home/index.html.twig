@@ -1,102 +1,87 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}NBA Project Home{% endblock %}
+{% block title %}Inicio - NBA Project{% endblock %}
 
 {% block body %}
     <style>
-        /* --- TRUCO IMPORTANTE --- */
-        /* Esto sobreescribe el color blanco del base.html.twig SOLO en esta página */
-        body {
-            background-color: #212529 !important;
-        }
+        /* Forzamos fondo oscuro para el body */
+        body { background-color: #212529 !important; }
 
-        /* ESTILOS ESPECÍFICOS PARA ESTA PÁGINA */
+        /* Contenedor principal con la imagen de fondo */
         .nba-dashboard {
-            min-height: calc(100vh - 76px); /* Restamos la altura aprox del navbar */
-
-            /* Imagen de fondo */
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url("{{ asset('images/fondo-nba.jpg') }}");
+            min-height: calc(100vh - 76px);
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url("{{ asset('images/fondo-nba.jpg') }}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-family: 'Arial', sans-serif;
             padding: 20px;
-            margin-top: -1px; /* Sube un pixel para tapar cualquier hueco */
         }
 
+        /* Título Principal */
         .main-title {
             background-color: rgba(255, 255, 255, 0.95);
-            padding: 15px 40px;
+            padding: 20px 50px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             margin-bottom: 50px;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .main-title h1 {
             margin: 0;
-            color: #cf5606;
+            color: #c84c1e; /* Color Naranja Teja Unificado */
             font-weight: 900;
             text-transform: uppercase;
-            font-size: 2rem;
+            letter-spacing: 3px;
         }
 
-        .main-title p {
-            margin: 5px 0 0 0;
-            color: #666;
-            font-weight: bold;
-        }
-
+        /* Rejilla de botones */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr; /* 2 columnas */
             gap: 30px;
             max-width: 900px;
             width: 100%;
         }
 
-        /* --- TARJETAS --- */
+        /* NUEVO ESTILO MINIMALISTA PARA LOS BOTONES */
         .card-btn {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 180px;
-            border-radius: 20px;
+            align-items: center;         /* Centrado vertical */
+            justify-content: center;     /* Centrado horizontal */
+            height: 140px;               /* Altura fija un poco menor sin iconos */
+            border-radius: 15px;
             text-decoration: none;
             background-color: rgba(255, 255, 255, 0.95);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
+
+            /* Color y Borde Unificados */
+            color: #c84c1e;
+            border-bottom: 8px solid #c84c1e;
+
+            font-weight: 800;
+            font-size: 1.4rem;           /* Letra un poco más grande */
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
 
+        /* Efecto al pasar el ratón: Se vuelve naranja con letra blanca */
         .card-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-            background-color: #ffffff;
+            background-color: #c84c1e;
+            color: #ffffff;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-bottom: 8px solid #a03c17; /* Borde un poco más oscuro al pulsar */
         }
 
-        .card-icon { font-size: 3.5rem; margin-bottom: 10px; }
-        .card-text { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Colores de texto */
-        .style-blue { color: #000000; border-bottom: 5px solid #000000; }
-        .style-blue:hover { border: 2px solid #000000; }
-
-        .style-red  { color: #000000; border-bottom: 5px solid #000000; }
-        .style-red:hover { border: 2px solid #000000; }
-
-        .style-orange { color: #000000; border-bottom: 5px solid #000000; }
-        .style-orange:hover { border: 2px solid #000000; }
-
-        .style-purple { color: #000000; border-bottom: 5px solid #000000; }
-        .style-purple:hover { border: 2px solid #000000; }
-
+        /* Ajuste para móviles */
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
     </style>
 
     <div class="nba-dashboard">
@@ -105,24 +90,20 @@
         </div>
 
         <div class="dashboard-grid">
-            <a href="{{ path('app_player_list') }}" class="card-btn style-blue">
-                <div class="card-icon">🏀</div>
-                <div class="card-text">JUGADORES</div>
+            <a href="{{ path('app_element_index') }}" class="card-btn">
+                VER JUGADORES
             </a>
 
-            <a href="#" class="card-btn style-red" onclick="alert('Próximamente: Rankings de la temporada')">
-                <div class="card-icon">🏆</div>
-                <div class="card-text">RANKINGS</div>
+            <a href="{{ path('app_ranking_index') }}" class="card-btn">
+                RANKINGS
             </a>
 
-            <a href="{{ path('app_element_index') }}" class="card-btn style-orange">
-                <div class="card-icon">⚙️</div>
-                <div class="card-text">ADMIN PANEL</div>
+            <a href="{{ path('admin') }}" class="card-btn">
+                ADMIN PANEL
             </a>
 
-            <a href="#" class="card-btn style-purple" onclick="alert('Próximamente: Estadísticas avanzadas')">
-                <div class="card-icon">📊</div>
-                <div class="card-text">STATS API</div>
+            <a href="#" class="card-btn" onclick="alert('Próximamente: Gráficas y Estadísticas.')">
+                STATS API
             </a>
         </div>
     </div>

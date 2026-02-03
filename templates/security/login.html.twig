@@ -1,34 +1,96 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Iniciar Sesión - NBA Project{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+    <style>
+        /* Forzamos fondo oscuro para evitar líneas blancas */
+        body {
+            background-color: #212529 !important;
+        }
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
-        </div>
-    {% endif %}
+        .auth-container {
+            min-height: calc(100vh - 76px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Fondo NBA */
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url("{{ asset('images/fondo-nba.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+        }
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        .auth-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
 
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
+        .auth-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+
+        .auth-title {
+            color: #1d428a; /* Azul NBA */
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos para los inputs del formulario */
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .btn-nba {
+            width: 100%;
+            padding: 12px;
+            background-color: #cf5606; /* Naranja NBA */
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-nba:hover { background-color: #a84200; color: white; }
+    </style>
+
+    <div class="auth-container">
+        <form method="post" class="auth-card">
+            <span class="auth-icon"></span>
+            <h1 class="auth-title">Bienvenido</h1>
+
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    Has iniciado sesión como {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Salir</a>
+                </div>
+            {% endif %}
+
+            <input type="email" value="{{ last_username }}" name="email" class="form-control" placeholder="Correo electrónico" autocomplete="email" required autofocus>
+            <input type="password" name="password" class="form-control" placeholder="Contraseña" autocomplete="current-password" required>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button class="btn btn-nba" type="submit">ENTRAR</button>
+
+            <div class="mt-3">
+                <small>¿No tienes cuenta? <a href="{{ path('app_register') }}" style="color: #1d428a; font-weight: bold;">Regístrate</a></small>
+            </div>
+        </form>
     </div>
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
 {% endblock %}

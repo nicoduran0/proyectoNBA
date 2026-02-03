@@ -49,15 +49,15 @@
             }
 
             .btn-login-nav {
-                background-color: #1d428a;
+                background-color: #f89c0c;
                 color: white;
-                border: 1px solid #1d428a;
+                border: 1px solid #f89c0c;
             }
 
             .btn-register-nav {
-                background-color: #198754;
+                background-color: #f89c0c;
                 color: white;
-                border: 1px solid #198754;
+                border: 1px solid #f89c0c;
             }
         </style>
     {% endblock %}
@@ -80,7 +80,7 @@
                         <span class="nav-link text-white">Hola, {{ app.user.userIdentifier }}</span>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ path('app_logout') }}" class="btn btn-danger btn-sm ms-3 rounded-pill px-3">Salir</a>
+                        <a href="{{ path('app_logout') }}" class="btn btn-danger btn-sm ms-3 rounded-pill px-3">Cerrar Sesión</a>
                     </li>
                 {% else %}
                     <li class="nav-item">

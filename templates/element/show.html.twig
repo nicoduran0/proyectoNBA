@@ -1,54 +1,160 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Element{% endblock %}
+{% block title %}Ficha de {{ element.name }}{% endblock %}
 
 {% block body %}
-    <h1>Element</h1>
+    <div class="container py-5">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ element.id }}</td>
-            </tr>
-            <tr>
-                <th>Stats</th>
-                <td>{{ element.stats }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ element.description }}</td>
-            </tr>
-            <tr>
-                <th>Number</th>
-                <td>{{ element.number }}</td>
-            </tr>
-            <tr>
-                <th>ApiId</th>
-                <td>{{ element.apiId }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ element.name }}</td>
-            </tr>
-            <tr>
-                <th>Team</th>
-                <td>{{ element.team }}</td>
-            </tr>
-            <tr>
-                <th>Position</th>
-                <td>{{ element.position }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>{{ element.image }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="card shadow-lg border-0 mb-5">
+            <div class="card-header text-white text-center py-4" style="background-color: #1d428a;">
+                <h1 class="fw-bold mb-0 text-uppercase">{{ element.name }}</h1>
+                <p class="mb-0 text-warning fw-bold">{{ element.team }} {{ element.number ? '#' ~ element.number : '' }}</p>
+            </div>
 
-    <a href="{{ path('app_element_index') }}">back to list</a>
+            <div class="card-body text-center p-5">
+                <div class="mb-4 d-flex justify-content-center">
+                    {% if element.image %}
+                        <img src="{{ element.image starts with 'http' ? element.image : asset('uploads/images/' ~ element.image) }}"
+                             class="img-fluid rounded shadow-sm"
+                             style="max-height: 300px; border: 4px solid #fff;">
+                    {% else %}
+                        <div class="bg-light d-flex align-items-center justify-content-center rounded" style="width: 200px; height: 200px;">
+                            <span class="display-1">🏀</span>
+                        </div>
+                    {% endif %}
+                </div>
 
-    <a href="{{ path('app_element_edit', {'id': element.id}) }}">edit</a>
+                <div class="row g-3 justify-content-center text-start mb-4">
+                    <div class="col-md-5">
+                        <div class="p-3 bg-light rounded border">
+                            <small class="text-uppercase text-muted fw-bold">Posición</small>
+                            <div class="fs-5">{{ element.position }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="p-3 bg-light rounded border">
+                            <small class="text-uppercase text-muted fw-bold">Categoría</small>
+                            <div class="fs-5">{{ element.category ? element.category.name : 'Sin categoría' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="p-3 bg-light rounded border">
+                            <small class="text-uppercase text-muted fw-bold">Estadísticas / Info</small>
+                            <div class="fs-5 fw-bold">{{ element.stats }}</div>
+                        </div>
+                    </div>
+                </div>
 
-    {{ include('element/_delete_form.html.twig') }}
+                <p class="text-muted fst-italic">{{ element.description }}</p>
+
+                <a href="{{ path('app_element_index') }}" class="btn btn-secondary mt-3">
+                    ← Volver a la lista
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+
+            <div class="col-12 mb-4">
+                <h3 class="fw-bold ps-3 border-start border-5 border-primary text-uppercase" style="color: #1d428a;">
+                    Zona de Fans
+                </h3>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+
+                <div class="card bg-dark text-white border-0 shadow mb-4 text-center overflow-hidden">
+                    <div class="card-body py-4">
+                        <h6 class="text-uppercase text-white-50 ls-1 mb-2">Valoración Media</h6>
+                        <div class="display-1 fw-bold text-warning mb-0" style="line-height: 1;">
+                            {{ element.calculatedAverage|number_format(1) }}
+                        </div>
+                        <div class="mb-2 text-warning fs-4">
+                            {% set score = element.calculatedAverage|round %}
+                            {% for i in 1..5 %}
+                                {{ i <= score ? '★' : '☆' }}
+                            {% endfor %}
+                        </div>
+                        <p class="small text-white-50 mb-0">
+                            Basado en {{ element.ratings|length }} votos
+                        </p>
+                    </div>
+                    <div class="card-footer bg-primary border-0 py-2">
+                        <small class="fw-bold text-uppercase">MVP RATING</small>
+                    </div>
+                </div>
+
+                {% if app.user %}
+                    <div class="card border-0 shadow-sm bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold mb-3 text-primary">¿Tu opinión?</h5>
+
+                            {{ form_start(form) }}
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">TU NOTA</label>
+                                <div class="d-flex flex-wrap gap-2 justify-content-between">
+                                    {{ form_widget(form.score) }}
+                                </div>
+                                <div class="text-danger small">{{ form_errors(form.score) }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_widget(form.comment, {'attr': {'class': 'form-control border-0 shadow-sm', 'rows': '3', 'placeholder': 'Escribe aquí tu análisis del jugador...'}}) }}
+                                <div class="text-danger small">{{ form_errors(form.comment) }}</div>
+                            </div>
+
+                            {{ form_widget(form.save, {
+                                'label': 'PUBLICAR VOTO',
+                                'attr': {'class': 'btn btn-primary w-100 fw-bold text-uppercase'}
+                            }) }}
+
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-secondary border-0 shadow-sm text-center">
+                        <p class="mb-2">¿Quieres participar?</p>
+                        <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-sm fw-bold">Inicia sesión para votar</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-8">
+                <div class="d-flex flex-column gap-3">
+                    {% for rating in element.ratings %}
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 shadow-sm"
+                                             style="width: 45px; height: 45px; font-weight: bold; font-size: 1.2rem;">
+                                            {{ rating.owner.email|first|upper }}
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold text-dark">{{ rating.owner.email }}</h6>
+                                            <span class="badge bg-light text-muted border">Fan verificado</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-warning fs-5">
+                                        {% for i in 1..5 %}
+                                            {{ i <= rating.score ? '★' : '☆' }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <p class="card-text text-dark opacity-75 fst-italic ps-5 border-start border-2 ms-2">
+                                    "{{ rating.comment }}"
+                                </p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 text-muted bg-light rounded border border-dashed">
+                            <p class="display-4 mb-2">📢</p>
+                            <p class="fs-5">Nadie ha opinado todavía.</p>
+                            <p class="small">¡Sé el primero en valorar a este jugador!</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

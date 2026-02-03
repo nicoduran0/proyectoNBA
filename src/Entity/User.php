@@ -54,6 +54,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->rankings = new ArrayCollection();
     }
 
+    // --- ESTO ES LO QUE NECESITABAS PARA EASYADMIN ---
+    public function __toString(): string
+    {
+        return (string) $this->email;
+    }
+    // -------------------------------------------------
+
     public function getId(): ?int
     {
         return $this->id;

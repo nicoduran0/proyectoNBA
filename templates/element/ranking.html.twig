@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ranking MVP{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <h1 class="text-center mb-5" style="color: #1d428a; font-weight: 900;">🏆 RANKING MVP 🏆</h1>
+
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead style="background-color: #1d428a; color: white;">
+                    <tr>
+                        <th class="py-3 ps-4">#</th>
+                        <th class="py-3">Jugador</th>
+                        <th class="py-3 text-center">Equipo</th>
+                        <th class="py-3 text-center">Nota Media</th>
+                        <th class="py-3 text-end pe-4">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in top_players %}
+                        <tr>
+                            <td class="ps-4 fw-bold">
+                                {% if loop.index == 1 %}🥇{% endif %}
+                                {% if loop.index == 2 %}🥈{% endif %}
+                                {% if loop.index == 3 %}🥉{% endif %}
+                                <span style="font-size: 1.2rem;">{{ loop.index }}</span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if player.image %}
+                                        <img src="{{ player.image starts with 'http' ? player.image : asset('uploads/images/' ~ player.image) }}"
+                                             style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
+                                    {% else %}
+                                        <div style="width: 50px; height: 50px; border-radius: 50%; background:#eee; margin-right: 15px; display:flex; align-items:center; justify-content:center;">🏀</div>
+                                    {% endif %}
+                                    <span class="fw-bold">{{ player.name }}</span>
+                                </div>
+                            </td>
+
+                            <td class="text-center">{{ player.team }}</td>
+
+                            <td class="text-center">
+                                <span class="badge bg-warning text-dark fs-6">
+                                    ★ {{ player.calculatedAverage|number_format(1) }}
+                                </span>
+                                <div class="small text-muted mt-1">{{ player.ratings|length }} votos</div>
+                            </td>
+
+                            <td class="text-end pe-4">
+                                <a href="{{ path('app_element_show', {'id': player.id}) }}" class="btn btn-sm btn-outline-primary">Ver / Votar</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="5" class="text-center py-4">Aún no hay datos para el ranking.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

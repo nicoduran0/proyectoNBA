@@ -6,6 +6,7 @@ use App\Repository\RatingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\UniqueConstraint(name: 'unique_user_element_rating', columns: ['owner_id', 'element_id'])]
 #[ORM\Entity(repositoryClass: RatingRepository::class)]
 class Rating
 {
