@@ -19,10 +19,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class ElementController extends AbstractController
 {
     #[Route('/', name: 'app_element_index', methods: ['GET'])]
-    public function index(ElementRepository $elementRepository): Response
+    public function index(ElementRepository $elementRepository, Request $request): Response
     {
+        // 1. Recoger el término de búsqueda de la URL (ej: ?q=Curry)
+        $searchTerm = $request->query->get('q');
+
+        // 2. Decidir qué buscar
+        if ($searchTerm) {
+            // Si hay texto, usamos tu nueva función del repositorio
+            $elements = $elementRepository->searchByNameOrTeam($searchTerm);
+        } else {
+            // Si no hay texto, mostramos todos como siempre
+            $elements = $elementRepository->findAll();
+        }
+
         return $this->render('element/index.html.twig', [
-            'elements' => $elementRepository->findAll(),
+            'elements' => $elements,
+            'searchTerm' => $searchTerm, // Pasamos el texto para que se mantenga en la cajita
         ]);
     }
 
