@@ -8,6 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField; // He añadido esto por si quieres subir fotos
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField; // Para la descripción
 
 class ElementCrudController extends AbstractCrudController
 {
@@ -27,10 +29,19 @@ class ElementCrudController extends AbstractCrudController
         yield TextField::new('position', 'Posición');
         yield IntegerField::new('number', 'Dorsal');
 
-        // 3. ESTO ES LO QUE NECESITAS:
-        // Te mostrará la categoría actual y te dejará cambiarla
-        yield AssociationField::new('category', 'Categoría')
-            ->setFormTypeOption('by_reference', false) // Obligatorio para guardar bien la relación
-            ->autocomplete(); // Añade un buscador para encontrar la categoría rápido
+        // 3. ESTO ES LO QUE NECESITAS (CAMBIO REALIZADO):
+        // Fíjate que ahora pone 'categories' (en PLURAL)
+        yield AssociationField::new('categories', 'Categorías')
+            ->setFormTypeOption('by_reference', false) // Obligatorio para guardar bien ManyToMany
+            ->autocomplete(); // Añade un buscador para seleccionar VARIAS categorías
+
+        // 4. Campos extra (Opcionales, pero útiles para tu web)
+        yield ImageField::new('image', 'Foto')
+            ->setBasePath('uploads/images')
+            ->setUploadDir('public/uploads/images')
+            ->setUploadedFileNamePattern('[randomhash].[extension]')
+            ->setRequired(false);
+
+        yield TextEditorField::new('description', 'Descripción')->hideOnIndex();
     }
 }

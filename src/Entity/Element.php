@@ -40,11 +40,13 @@ class Element
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $image = null;
 
-    // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
-    #[ORM\ManyToOne(inversedBy: 'elements')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Category $category = null;
-    // ---------------------------------
+    // --- CAMBIO REALIZADO: AHORA ES MANY-TO-MANY ---
+    /**
+     * @var Collection<int, Category>
+     */
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'elements')]
+    private Collection $categories;
+    // -----------------------------------------------
 
     /**
      * @var Collection<int, Rating>
@@ -62,6 +64,8 @@ class Element
     {
         $this->ratings = new ArrayCollection();
         $this->rankings = new ArrayCollection();
+        // IMPORTANTE: Inicializar la colección de categorías
+        $this->categories = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -170,17 +174,32 @@ class Element
         return $this;
     }
 
-    public function getCategory(): ?Category
+    // --- NUEVOS MÉTODOS PARA CATEGORÍAS (ADD/REMOVE) ---
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
     {
-        return $this->category;
+        return $this->categories;
     }
 
-    public function setCategory(?Category $category): static
+    public function addCategory(Category $category): static
     {
-        $this->category = $category;
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
 
         return $this;
     }
+
+    public function removeCategory(Category $category): static
+    {
+        $this->categories->removeElement($category);
+
+        return $this;
+    }
+    // ---------------------------------------------------
 
     /**
      * @return Collection<int, Rating>

@@ -21,7 +21,8 @@ class Category
     /**
      * @var Collection<int, Element>
      */
-    #[ORM\OneToMany(targetEntity: Element::class, mappedBy: 'category')]
+    // CAMBIO IMPORTANTE: Ahora es ManyToMany y apunta a 'categories' en Element
+    #[ORM\ManyToMany(targetEntity: Element::class, mappedBy: 'categories')]
     private Collection $elements;
 
     public function __construct()
@@ -63,7 +64,8 @@ class Category
     {
         if (!$this->elements->contains($element)) {
             $this->elements->add($element);
-            $element->setCategory($this);
+            // Sincronizamos con el otro lado (Element)
+            $element->addCategory($this);
         }
 
         return $this;
@@ -72,10 +74,8 @@ class Category
     public function removeElement(Element $element): static
     {
         if ($this->elements->removeElement($element)) {
-            // set the owning side to null (unless already changed)
-            if ($element->getCategory() === $this) {
-                $element->setCategory(null);
-            }
+            // Sincronizamos con el otro lado (Element)
+            $element->removeCategory($this);
         }
 
         return $this;
