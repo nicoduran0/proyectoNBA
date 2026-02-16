@@ -6,7 +6,7 @@ use App\Entity\Element;
 use App\Entity\Rating;
 use App\Form\RatingType;
 use App\Repository\ElementRepository;
-use App\Repository\RatingRepository; // <--- IMPORTANTE: Añadir esto
+use App\Repository\RatingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,31 +26,22 @@ final class ElementController extends AbstractController
         ]);
     }
 
-    #[Route('/ranking/top', name: 'app_ranking_index', methods: ['GET'])]
-    public function ranking(ElementRepository $elementRepository): Response
-    {
-        $players = $elementRepository->findAll();
-
-        usort($players, function ($a, $b) {
-            return $b->getCalculatedAverage() <=> $a->getCalculatedAverage();
-        });
-
-        return $this->render('element/ranking.html.twig', [
-            'top_players' => $players,
-        ]);
-    }
+    // --- HE BORRADO LA FUNCIÓN RANKING DE AQUÍ ---
+    // Ahora esa lógica vive feliz en RankingController.php
+    // ---------------------------------------------
 
     #[Route('/{id}', name: 'app_element_show', methods: ['GET', 'POST'])]
     public function show(
         Element $element,
         Request $request,
         EntityManagerInterface $entityManager,
-        RatingRepository $ratingRepository // <--- NECESARIO para buscar si ya votó
+        RatingRepository $ratingRepository
     ): Response
     {
         $user = $this->getUser();
 
         // 1. BUSCAR SI YA EXISTE UN VOTO DE ESTE USUARIO
+        // Esto es crucial para que no puedan votar 2 veces al mismo, sino editar su voto.
         $rating = $ratingRepository->findOneBy([
             'owner' => $user,
             'element' => $element
@@ -63,22 +54,24 @@ final class ElementController extends AbstractController
             $rating->setOwner($user);
         }
 
-        // 3. CREAR EL FORMULARIO (Cargará los datos si ya existían o estará vacío si es nuevo)
+        // 3. CREAR EL FORMULARIO
         $form = $this->createForm(RatingType::class, $rating);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // Nos aseguramos de que las relaciones están bien puestas
+            // Aseguramos las relaciones antes de guardar
             $rating->setOwner($user);
             $rating->setElement($element);
 
             $entityManager->persist($rating);
             $entityManager->flush();
 
-            // Mensaje personalizado
+            // Mensaje personalizado según si es nuevo o edición
+            // (Si el ID existe, es que ya estaba en base de datos)
             $mensaje = $rating->getId() ? '¡Tu valoración se ha actualizado!' : '¡Gracias por tu voto!';
+
             $this->addFlash('success', $mensaje);
 
             return $this->redirectToRoute('app_element_show', ['id' => $element->getId()]);

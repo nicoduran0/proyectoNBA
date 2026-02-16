@@ -40,8 +40,11 @@ class Element
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $image = null;
 
+    // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
     #[ORM\ManyToOne(inversedBy: 'elements')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Category $category = null;
+    // ---------------------------------
 
     /**
      * @var Collection<int, Rating>
@@ -61,12 +64,10 @@ class Element
         $this->rankings = new ArrayCollection();
     }
 
-    // --- ESTO ES LO QUE NECESITABAS PARA EASYADMIN ---
     public function __toString(): string
     {
         return (string) $this->name;
     }
-    // -------------------------------------------------
 
     public function getId(): ?int
     {
@@ -248,8 +249,6 @@ class Element
 
         $total = 0;
         foreach ($ratings as $rating) {
-            // Asegúrate de que Rating tiene un método getScore o getValue
-            // Si en Rating la propiedad es 'value', usa getScore() si hiciste un alias o getValue()
             $total += $rating->getScore();
         }
 

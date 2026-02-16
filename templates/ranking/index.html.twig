@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mis Tier Lists{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold" style="color: #c84c1e;">MIS RANKINGS</h1>
+            <p class="lead text-muted">Arrastra a los jugadores para crear tu propio ranking</p>
+        </div>
+
+        {% for item in tier_lists %}
+            <div class="card shadow border-0 mb-5">
+                <div class="card-header text-white py-3 d-flex justify-content-between align-items-center" style="background-color: #1d428a;">
+                    <h3 class="m-0 fw-bold">{{ item.category.name }}</h3>
+                    <small class="badge bg-light text-dark">Arrastra para ordenar</small>
+                </div>
+
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush sortable-list" id="list-{{ item.category.id }}">
+                        {% for element in item.elements %}
+                            <li class="list-group-item d-flex align-items-center p-3" data-id="{{ element.id }}" style="cursor: grab;">
+                                <span class="me-3 text-muted fs-4">☰</span>
+
+                                <span class="badge bg-dark me-3 rank-number fs-6" style="width: 30px;">{{ loop.index }}</span>
+
+                                {% if element.image %}
+                                    <img src="{{ element.image }}" class="rounded-circle me-3 border" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                    <div class="rounded-circle bg-secondary me-3 d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px;">
+                                        {{ element.name|slice(0,1) }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="flex-grow-1">
+                                    <h5 class="m-0 fw-bold">{{ element.name }}</h5>
+                                    <small class="text-muted">{{ element.team }}</small>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="card-footer bg-light p-3 text-end">
+                    <form action="{{ path('app_ranking_save', {id: item.category.id}) }}" method="POST" id="form-{{ item.category.id }}">
+                        <input type="hidden" name="order" id="input-order-{{ item.category.id }}">
+                        <button type="button" onclick="saveOrder({{ item.category.id }})" class="btn btn-success fw-bold px-4 shadow-sm">
+                            GUARDAR ORDEN
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center">
+                No hay categorías con jugadores disponibles.
+            </div>
+        {% endfor %}
+
+        <div class="text-center mt-5">
+            <a href="{{ path('app_home') }}" class="btn btn-outline-dark">&larr; Volver al Inicio</a>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+    <script>
+        // 1. Activar Drag & Drop
+        document.querySelectorAll('.sortable-list').forEach(list => {
+            new Sortable(list, {
+                animation: 150,
+                ghostClass: 'bg-light', // Clase visual al arrastrar
+                onEnd: function (evt) {
+                    // Actualizar números 1, 2, 3... visualmente al soltar
+                    updateNumbers(list);
+                }
+            });
+        });
+
+        // 2. Función para renumerar visualmente
+        function updateNumbers(list) {
+            let index = 1;
+            list.querySelectorAll('.rank-number').forEach(badge => {
+                badge.innerText = index++;
+            });
+        }
+
+        // 3. Función para enviar el formulario
+        function saveOrder(catId) {
+            const list = document.getElementById('list-' + catId);
+            const input = document.getElementById('input-order-' + catId);
+            const form = document.getElementById('form-' + catId);
+
+            // Recoger IDs en orden
+            let ids = [];
+            list.querySelectorAll('li').forEach(item => {
+                ids.push(item.getAttribute('data-id'));
+            });
+
+            // Poner en input oculto y enviar
+            input.value = ids.join(',');
+            form.submit();
+        }
+    </script>
+{% endblock %}
