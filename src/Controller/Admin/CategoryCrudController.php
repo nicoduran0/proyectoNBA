@@ -17,16 +17,12 @@ class CategoryCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        // El ID no lo tocamos, lo ocultamos al crear
         yield IdField::new('id')->hideOnForm();
 
-        // El nombre de la categoría (ej: "Conferencia Este")
         yield TextField::new('name', 'Nombre de la Categoría');
 
-        // AQUÍ ESTÁ LO QUE PEDISTE:
-        // Te permite buscar y seleccionar jugadores para meterlos en esta categoría.
         yield AssociationField::new('elements', 'Jugadores en esta categoría')
-            ->setFormTypeOption('by_reference', false) // ¡IMPORTANTE! Esto hace que se guarde la relación
-            ->autocomplete(); // Añade un buscador para que sea más cómodo si tienes muchos jugadores
+            ->setFormTypeOption('by_reference', false)
+            ->autocomplete();
     }
 }

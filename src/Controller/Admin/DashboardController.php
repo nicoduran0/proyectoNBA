@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Entity\Element;
-use App\Entity\Rating;  // <--- 1. CAMBIO CLAVE: Importamos Rating (Votos) en vez de Ranking
+use App\Entity\Rating;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -33,18 +33,11 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Inicio', 'fa fa-home');
-
         yield MenuItem::section('Base de Datos');
         yield MenuItem::linkToCrud('Usuarios', 'fas fa-users', User::class);
         yield MenuItem::linkToCrud('Categorías', 'fas fa-list', Category::class);
         yield MenuItem::linkToCrud('Elementos (Jugadores)', 'fas fa-basketball-ball', Element::class);
-
-        // 👇 AQUÍ ESTÁ EL ARREGLO
-        // Antes apuntabas a Ranking::class (incorrecto para editar votos).
-        // Ahora apuntamos a Rating::class (donde están los comentarios y estrellas).
-        // He cambiado el icono a una estrella (fa-star) y el nombre a "Valoraciones".
         yield MenuItem::linkToCrud('Valoraciones', 'fas fa-star', Rating::class);
-
         yield MenuItem::section('Navegación');
         yield MenuItem::linkToRoute('Volver a la Web', 'fa fa-arrow-left', 'app_home');
     }

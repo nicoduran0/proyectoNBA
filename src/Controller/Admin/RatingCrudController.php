@@ -18,10 +18,10 @@ class RatingCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield IdField::new('id')->hideOnForm(); // Ocultamos ID en el formulario
+        yield IdField::new('id')->hideOnForm();
 
         yield AssociationField::new('owner', 'Usuario')
-            ->setFormTypeOption('disabled', true); // Bloqueamos editar el usuario para evitar líos
+            ->setFormTypeOption('disabled', true);
 
         yield AssociationField::new('element', 'Jugador Votado');
 
@@ -34,11 +34,11 @@ class RatingCrudController extends AbstractCrudController
                 'Rookie (1)' => 1,
             ])
             ->renderAsBadges([
-                5 => 'success', // Verde
-                4 => 'primary', // Azul
-                3 => 'info',    // Azul claro
-                2 => 'warning', // Naranja
-                1 => 'danger',  // Rojo
+                5 => 'success',
+                4 => 'primary',
+                3 => 'info',
+                2 => 'warning',
+                1 => 'danger',
             ]);
 
         yield TextareaField::new('comment', 'Comentario');
