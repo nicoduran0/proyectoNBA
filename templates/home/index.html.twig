@@ -10,6 +10,7 @@
         /* Contenedor principal con la imagen de fondo */
         .nba-dashboard {
             min-height: calc(100vh - 76px);
+            /* Asegúrate de que la imagen existe en public/images/ */
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url("{{ asset('images/fondo-nba.jpg') }}");
             background-size: cover;
             background-position: center;
@@ -102,7 +103,7 @@
                 ADMIN PANEL
             </a>
 
-            <a href="#" class="card-btn" onclick="alert('Próximamente: Gráficas y Estadísticas.')">
+            <a href="{{ path('app_stats') }}" class="card-btn">
                 STATS API
             </a>
         </div>

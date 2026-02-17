@@ -40,13 +40,11 @@ class Element
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $image = null;
 
-    // --- CAMBIO REALIZADO: AHORA ES MANY-TO-MANY ---
     /**
      * @var Collection<int, Category>
      */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'elements')]
     private Collection $categories;
-    // -----------------------------------------------
 
     /**
      * @var Collection<int, Rating>
@@ -60,12 +58,20 @@ class Element
     #[ORM\ManyToMany(targetEntity: Ranking::class, mappedBy: 'elements')]
     private Collection $rankings;
 
+    // --- RELACIÓN CON USER RANKING ---
+    /**
+     * @var Collection<int, UserRanking>
+     */
+    #[ORM\OneToMany(targetEntity: UserRanking::class, mappedBy: 'element', orphanRemoval: true)]
+    private Collection $userRankings;
+    // ---------------------------------
+
     public function __construct()
     {
         $this->ratings = new ArrayCollection();
         $this->rankings = new ArrayCollection();
-        // IMPORTANTE: Inicializar la colección de categorías
         $this->categories = new ArrayCollection();
+        $this->userRankings = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -78,6 +84,8 @@ class Element
         return $this->id;
     }
 
+    // ... Getters y Setters ...
+
     public function getStats(): ?string
     {
         return $this->stats;
@@ -86,7 +94,6 @@ class Element
     public function setStats(?string $stats): static
     {
         $this->stats = $stats;
-
         return $this;
     }
 
@@ -98,7 +105,6 @@ class Element
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -110,7 +116,6 @@ class Element
     public function setNumber(?string $number): static
     {
         $this->number = $number;
-
         return $this;
     }
 
@@ -122,7 +127,6 @@ class Element
     public function setApiId(?int $apiId): static
     {
         $this->apiId = $apiId;
-
         return $this;
     }
 
@@ -134,7 +138,6 @@ class Element
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -146,7 +149,6 @@ class Element
     public function setTeam(?string $team): static
     {
         $this->team = $team;
-
         return $this;
     }
 
@@ -158,7 +160,6 @@ class Element
     public function setPosition(?string $position): static
     {
         $this->position = $position;
-
         return $this;
     }
 
@@ -170,15 +171,11 @@ class Element
     public function setImage(?string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
-    // --- NUEVOS MÉTODOS PARA CATEGORÍAS (ADD/REMOVE) ---
+    // --- MÉTODOS DE COLECCIONES ---
 
-    /**
-     * @return Collection<int, Category>
-     */
     public function getCategories(): Collection
     {
         return $this->categories;
@@ -189,21 +186,15 @@ class Element
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
         }
-
         return $this;
     }
 
     public function removeCategory(Category $category): static
     {
         $this->categories->removeElement($category);
-
         return $this;
     }
-    // ---------------------------------------------------
 
-    /**
-     * @return Collection<int, Rating>
-     */
     public function getRatings(): Collection
     {
         return $this->ratings;
@@ -215,25 +206,19 @@ class Element
             $this->ratings->add($rating);
             $rating->setElement($this);
         }
-
         return $this;
     }
 
     public function removeRating(Rating $rating): static
     {
         if ($this->ratings->removeElement($rating)) {
-            // set the owning side to null (unless already changed)
             if ($rating->getElement() === $this) {
                 $rating->setElement(null);
             }
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Ranking>
-     */
     public function getRankings(): Collection
     {
         return $this->rankings;
@@ -245,7 +230,6 @@ class Element
             $this->rankings->add($ranking);
             $ranking->addElement($this);
         }
-
         return $this;
     }
 
@@ -254,23 +238,57 @@ class Element
         if ($this->rankings->removeElement($ranking)) {
             $ranking->removeElement($this);
         }
-
         return $this;
+    }
+
+    /**
+     * @return Collection<int, UserRanking>
+     */
+    public function getUserRankings(): Collection
+    {
+        return $this->userRankings;
     }
 
     public function getCalculatedAverage(): float
     {
         $ratings = $this->getRatings();
-
         if ($ratings->isEmpty()) {
             return 0.0;
         }
-
         $total = 0;
         foreach ($ratings as $rating) {
             $total += $rating->getScore();
         }
-
         return $total / $ratings->count();
+    }
+
+    /**
+     * --- FUNCIÓN MEJORADA ---
+     * Calcula la posición media comparando IDs para mayor seguridad.
+     */
+    public function getAverageRank(Category $category): float
+    {
+        $totalPosition = 0;
+        $count = 0;
+
+        // Obtenemos el ID de la categoría objetivo para comparar de forma segura
+        // (Esto evita problemas si las instancias de objeto son distintas en memoria)
+        $targetCategoryId = $category->getId();
+
+        foreach ($this->getUserRankings() as $ranking) {
+            // Verificamos que el ranking tenga categoría y que los IDs coincidan
+            if ($ranking->getCategory() && $ranking->getCategory()->getId() === $targetCategoryId) {
+                $totalPosition += $ranking->getPosition();
+                $count++;
+            }
+        }
+
+        // Si nadie lo ha rankeado, devolvemos 999 para que salga el último
+        if ($count === 0) {
+            return 999.0;
+        }
+
+        // Devolvemos redondeado a 2 decimales para que se vea limpio (ej: 1.50)
+        return round($totalPosition / $count, 2);
     }
 }
