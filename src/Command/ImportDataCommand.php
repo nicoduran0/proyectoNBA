@@ -31,7 +31,6 @@ class ImportDataCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('Iniciando importación completa de la NBA...');
 
-        // 1. Buscamos la Categoría "Baloncesto"
         $category = $this->categoryRepository->findOneBy(['name' => 'Baloncesto']);
 
         if (!$category) {
@@ -39,22 +38,18 @@ class ImportDataCommand extends Command
             return Command::FAILURE;
         }
 
-        // 2. Descargamos los datos
         $response = $this->client->request('GET', 'https://devsapihub.com/api-players');
         $players = $response->toArray();
 
         foreach ($players as $playerData) {
-            // Comprobar si ya existe para no duplicar
             $existingElement = $this->entityManager->getRepository(Element::class)->findOneBy(['name' => $playerData['name']]);
 
             if ($existingElement) {
-                // Si ya existe, no hacemos nada y pasamos al siguiente
                 continue;
             }
 
             $element = new Element();
 
-            // --- ASIGNACIÓN DE DATOS ---
             $element->setName($playerData['name']);
             $element->setImage($playerData['imgSrc']);
 
@@ -65,8 +60,6 @@ class ImportDataCommand extends Command
             $element->setStats($playerData['stats']);
             $element->setNumber($playerData['number']);
 
-            // --- CORRECCIÓN AQUÍ ---
-            // Usamos '?? null' para decir: "Si no existe 'id', usa null"
             $element->setApiId($playerData['id'] ?? null);
 
             $element->setDescription($playerData['info']);

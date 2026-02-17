@@ -18,7 +18,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class ImportPlayersCommand extends Command
 {
-    // Hemos quitado CategoryRepository porque ya no lo vamos a usar
     public function __construct(
         private HttpClientInterface $client,
         private EntityManagerInterface $entityManager,
@@ -32,7 +31,6 @@ class ImportPlayersCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('Iniciando importación de jugadores...');
 
-        // 1. Conectar a la API
         try {
             $response = $this->client->request('GET', 'https://devsapihub.com/api-players');
             $data = $response->toArray();
@@ -46,13 +44,11 @@ class ImportPlayersCommand extends Command
         $contadorCreados = 0;
         $contadorActualizados = 0;
 
-        // 2. Recorrer cada jugador
         foreach ($players as $playerData) {
 
             $apiId = $playerData['id'] ?? null;
             $name = $playerData['name'] ?? $playerData['nombre'] ?? 'Unknown Player';
 
-            // Buscar si ya existe
             $element = null;
             if ($apiId) {
                 $element = $this->elementRepository->findOneBy(['apiId' => $apiId]);
@@ -61,7 +57,6 @@ class ImportPlayersCommand extends Command
                 $element = $this->elementRepository->findOneBy(['name' => $name]);
             }
 
-            // Crear o Actualizar
             if (!$element) {
                 $element = new Element();
                 $element->setApiId($apiId);
@@ -70,7 +65,6 @@ class ImportPlayersCommand extends Command
                 $contadorActualizados++;
             }
 
-            // Asignar datos básicos
             $element->setName($name);
             $element->setTeam($playerData['team'] ?? $playerData['teamName'] ?? $playerData['equipo'] ?? 'Agente Libre');
             $element->setPosition($playerData['position'] ?? $playerData['posicion'] ?? 'N/A');
