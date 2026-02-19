@@ -44,13 +44,9 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Si el usuario intentó entrar a una página protegida antes de loguearse, lo enviamos allí.
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
-        // --- AQUÍ ESTÁ EL CAMBIO ---
-        // Redirigimos al usuario a la portada ('app_home') tras un login exitoso.
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
