@@ -27,25 +27,20 @@ class RankingController extends AbstractController
         foreach ($categories as $category) {
             $elements = $category->getElements()->toArray();
 
-            // Si la categoría está vacía, saltamos
             if (empty($elements)) continue;
 
-            // 1. Buscamos si el usuario ya tiene un orden guardado
             $userRankings = $rankingRepo->findBy([
                 'owner' => $user,
                 'category' => $category
             ], ['position' => 'ASC']);
 
-            // 2. Si tiene orden, reordenamos los elementos
             if ($userRankings) {
                 $orderMap = [];
                 foreach ($userRankings as $ur) {
-                    // Mapeamos ID_Elemento => Posición
                     $orderMap[$ur->getElement()->getId()] = $ur->getPosition();
                 }
 
                 usort($elements, function($a, $b) use ($orderMap) {
-                    // Los que no tengan posición (nuevos) van al final (9999)
                     $posA = $orderMap[$a->getId()] ?? 9999;
                     $posB = $orderMap[$b->getId()] ?? 9999;
                     return $posA <=> $posB;
@@ -74,19 +69,15 @@ class RankingController extends AbstractController
     {
         $user = $this->getUser();
 
-        // Recibimos los IDs ordenados (ej: "10,2,5,8")
         $orderString = $request->request->get('order');
         $orderedIds = explode(',', $orderString);
 
-        // 1. Borrar orden anterior de ESTE usuario en ESTA categoría
-        // (Para evitar duplicados y conflictos)
         $oldRankings = $rankingRepo->findBy(['owner' => $user, 'category' => $category]);
         foreach ($oldRankings as $old) {
             $em->remove($old);
         }
         $em->flush();
 
-        // 2. Guardar el nuevo orden
         foreach ($orderedIds as $index => $elementId) {
             if (!$elementId) continue;
 
@@ -96,7 +87,7 @@ class RankingController extends AbstractController
                 $ranking->setOwner($user);
                 $ranking->setCategory($category);
                 $ranking->setElement($element);
-                $ranking->setPosition($index + 1); // Posición 1, 2, 3...
+                $ranking->setPosition($index + 1);
 
                 $em->persist($ranking);
             }

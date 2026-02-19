@@ -21,21 +21,17 @@ final class ElementController extends AbstractController
     #[Route('/', name: 'app_element_index', methods: ['GET'])]
     public function index(ElementRepository $elementRepository, Request $request): Response
     {
-        // 1. Recoger el término de búsqueda de la URL (ej: ?q=Curry)
         $searchTerm = $request->query->get('q');
 
-        // 2. Decidir qué buscar
         if ($searchTerm) {
-            // Si hay texto, usamos tu nueva función del repositorio
             $elements = $elementRepository->searchByNameOrTeam($searchTerm);
         } else {
-            // Si no hay texto, mostramos todos como siempre
             $elements = $elementRepository->findAll();
         }
 
         return $this->render('element/index.html.twig', [
             'elements' => $elements,
-            'searchTerm' => $searchTerm, // Pasamos el texto para que se mantenga en la cajita
+            'searchTerm' => $searchTerm,
         ]);
     }
 
@@ -49,33 +45,28 @@ final class ElementController extends AbstractController
     {
         $user = $this->getUser();
 
-        // 1. Buscar si ya existe un voto de este usuario para editarlo
         $rating = $ratingRepository->findOneBy([
             'owner' => $user,
             'element' => $element
         ]);
 
-        // 2. Si no existe, preparamos uno nuevo
         if (!$rating) {
             $rating = new Rating();
             $rating->setElement($element);
             $rating->setOwner($user);
         }
 
-        // 3. Crear y manejar el formulario
         $form = $this->createForm(RatingType::class, $rating);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // Aseguramos las relaciones
             $rating->setOwner($user);
             $rating->setElement($element);
 
             $entityManager->persist($rating);
             $entityManager->flush();
 
-            // Mensaje según si es nuevo o edición
             $mensaje = $rating->getId() ? '¡Tu valoración se ha actualizado!' : '¡Gracias por tu voto!';
             $this->addFlash('success', $mensaje);
 
