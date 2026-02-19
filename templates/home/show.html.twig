@@ -5,17 +5,14 @@
 {% block body %}
     <div class="container mt-5" style="margin-bottom: 50px;">
 
-        {# CAMBIO 1: El enlace ahora apunta a 'app_player_list' (la lista), no al home #}
         <a href="{{ path('app_player_list') }}" class="btn btn-outline-secondary mb-4">
             &larr; Volver al Roster
         </a>
 
         <div class="row">
-            {# Columna Izquierda: Foto grande #}
             <div class="col-md-5">
                 <div class="card shadow-lg border-0" style="overflow: hidden;">
 
-                    {# CAMBIO 3: Si hay imagen la muestra, si no, pone un fondo gris con icono #}
                     {% if element.image %}
                         <img src="{{ element.image }}" alt="{{ element.name }}" class="card-img-top" style="max-height: 500px; object-fit: cover;">
                     {% else %}
@@ -24,7 +21,6 @@
                         </div>
                     {% endif %}
 
-                    {# CAMBIO 2: Fondo naranja estilo NBA en lugar de negro #}
                     <div class="card-body text-center text-white" style="background-color: #cf5606;">
                         <h2 class="m-0 fw-bold">#{{ element.number }}</h2>
                         <span class="badge bg-white text-dark mt-2">{{ element.position }}</span>
@@ -32,7 +28,6 @@
                 </div>
             </div>
 
-            {# Columna Derecha: Información #}
             <div class="col-md-7">
                 <h1 class="display-4 fw-bold">{{ element.name }}</h1>
                 <h3 class="text-muted mb-4">{{ element.team }}</h3>
@@ -47,7 +42,6 @@
                         Biografía / Scouting Report
                     </div>
                     <div class="card-body">
-                        {# Usamos default para que no quede vacío si no hay descripción #}
                         <p class="card-text">{{ element.description|default('No hay descripción disponible para este jugador.')|nl2br }}</p>
                     </div>
                 </div>

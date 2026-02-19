@@ -4,13 +4,10 @@
 
 {% block body %}
     <style>
-        /* Forzamos fondo oscuro para el body */
         body { background-color: #212529 !important; }
 
-        /* Contenedor principal con la imagen de fondo */
         .nba-dashboard {
             min-height: calc(100vh - 76px);
-            /* Asegúrate de que la imagen existe en public/images/ */
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url("{{ asset('images/fondo-nba.jpg') }}");
             background-size: cover;
             background-position: center;
@@ -22,7 +19,6 @@
             padding: 20px;
         }
 
-        /* Título Principal */
         .main-title {
             background-color: rgba(255, 255, 255, 0.95);
             padding: 20px 50px;
@@ -34,52 +30,45 @@
 
         .main-title h1 {
             margin: 0;
-            color: #c84c1e; /* Color Naranja Teja Unificado */
+            color: #c84c1e;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 3px;
         }
 
-        /* Rejilla de botones */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 columnas */
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
             max-width: 900px;
             width: 100%;
         }
 
-        /* NUEVO ESTILO MINIMALISTA PARA LOS BOTONES */
         .card-btn {
             display: flex;
-            align-items: center;         /* Centrado vertical */
-            justify-content: center;     /* Centrado horizontal */
-            height: 140px;               /* Altura fija un poco menor sin iconos */
+            align-items: center;
+            justify-content: center;
+            height: 140px;
             border-radius: 15px;
             text-decoration: none;
             background-color: rgba(255, 255, 255, 0.95);
-
-            /* Color y Borde Unificados */
             color: #c84c1e;
             border-bottom: 8px solid #c84c1e;
-
             font-weight: 800;
-            font-size: 1.4rem;           /* Letra un poco más grande */
+            font-size: 1.4rem;
             text-transform: uppercase;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
         }
 
-        /* Efecto al pasar el ratón: Se vuelve naranja con letra blanca */
         .card-btn:hover {
             transform: translateY(-5px);
             background-color: #c84c1e;
             color: #ffffff;
             box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-            border-bottom: 8px solid #a03c17; /* Borde un poco más oscuro al pulsar */
+            border-bottom: 8px solid #a03c17;
         }
 
-        /* Ajuste para móviles */
         @media (max-width: 768px) {
             .dashboard-grid { grid-template-columns: 1fr; }
         }

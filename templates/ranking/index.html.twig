@@ -66,19 +66,16 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <script>
-        // 1. Activar Drag & Drop
         document.querySelectorAll('.sortable-list').forEach(list => {
             new Sortable(list, {
                 animation: 150,
-                ghostClass: 'bg-light', // Clase visual al arrastrar
+                ghostClass: 'bg-light',
                 onEnd: function (evt) {
-                    // Actualizar números 1, 2, 3... visualmente al soltar
                     updateNumbers(list);
                 }
             });
         });
 
-        // 2. Función para renumerar visualmente
         function updateNumbers(list) {
             let index = 1;
             list.querySelectorAll('.rank-number').forEach(badge => {
@@ -86,19 +83,16 @@
             });
         }
 
-        // 3. Función para enviar el formulario
         function saveOrder(catId) {
             const list = document.getElementById('list-' + catId);
             const input = document.getElementById('input-order-' + catId);
             const form = document.getElementById('form-' + catId);
 
-            // Recoger IDs en orden
             let ids = [];
             list.querySelectorAll('li').forEach(item => {
                 ids.push(item.getAttribute('data-id'));
             });
 
-            // Poner en input oculto y enviar
             input.value = ids.join(',');
             form.submit();
         }

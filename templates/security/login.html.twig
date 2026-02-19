@@ -4,7 +4,6 @@
 
 {% block body %}
     <style>
-        /* Forzamos fondo oscuro para evitar líneas blancas */
         body {
             background-color: #212529 !important;
         }
@@ -14,7 +13,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Fondo NBA */
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url("{{ asset('images/fondo-nba.jpg') }}");
             background-size: cover;
             background-position: center;
@@ -34,13 +32,12 @@
         .auth-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
 
         .auth-title {
-            color: #1d428a; /* Azul NBA */
+            color: #1d428a;
             font-weight: 900;
             text-transform: uppercase;
             margin-bottom: 20px;
         }
 
-        /* Estilos para los inputs del formulario */
         .form-control {
             border-radius: 8px;
             padding: 12px;
@@ -51,7 +48,7 @@
         .btn-nba {
             width: 100%;
             padding: 12px;
-            background-color: #cf5606; /* Naranja NBA */
+            background-color: #cf5606;
             border: none;
             color: white;
             font-weight: bold;
