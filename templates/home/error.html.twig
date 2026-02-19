@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Acceso Denegado{% endblock %}
+
+{% block body %}
+    <style>
+        .error-container {
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+        .error-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 500px;
+            border-top: 5px solid #1d428a;
+        }
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .error-title {
+            color: #1d428a;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-nba {
+            background-color: #c8102e;
+            border: none;
+            padding: 10px 25px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn-nba:hover {
+            background-color: #a00d25;
+            transform: scale(1.05);
+            color: white;
+        }
+    </style>
+
+    <div class="error-container">
+        <div class="error-card text-center">
+            <div class="error-icon">🚫🏀</div>
+            <h1 class="error-title">Fuera de Juego</h1>
+            <p class="text-muted mb-4">
+                Lo sentimos, rookie. Esta zona es exclusiva para el <strong>Cuerpo Técnico (Administradores)</strong>.
+            </p>
+            <div class="mb-4">
+            <span class="badge rounded-pill bg-light text-dark p-2 px-3 border">
+                Error 403: Permisos Insuficientes
+            </span>
+            </div>
+            <a href="{{ path('app_home') }}" class="btn btn-nba text-white">
+                <i class="fas fa-home me-2"></i>Volver al Inicio
+            </a>
+        </div>
+    </div>
+{% endblock %}
