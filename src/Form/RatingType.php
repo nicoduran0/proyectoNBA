@@ -24,7 +24,7 @@ class RatingType extends AbstractType
                     '⭐⭐ (Suplente)' => 2,
                     '⭐ (Rookie)' => 1,
                 ],
-                'expanded' => true, // Esto hace que salgan botones (radio) en vez de lista desplegable
+                'expanded' => true,
                 'multiple' => false,
                 'attr' => ['class' => 'd-flex flex-wrap gap-3 justify-content-center mb-3'],
             ])

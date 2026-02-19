@@ -58,13 +58,11 @@ class Element
     #[ORM\ManyToMany(targetEntity: Ranking::class, mappedBy: 'elements')]
     private Collection $rankings;
 
-    // --- RELACIÓN CON USER RANKING ---
     /**
      * @var Collection<int, UserRanking>
      */
     #[ORM\OneToMany(targetEntity: UserRanking::class, mappedBy: 'element', orphanRemoval: true)]
     private Collection $userRankings;
-    // ---------------------------------
 
     public function __construct()
     {
@@ -83,8 +81,6 @@ class Element
     {
         return $this->id;
     }
-
-    // ... Getters y Setters ...
 
     public function getStats(): ?string
     {
@@ -174,8 +170,6 @@ class Element
         return $this;
     }
 
-    // --- MÉTODOS DE COLECCIONES ---
-
     public function getCategories(): Collection
     {
         return $this->categories;
@@ -262,33 +256,24 @@ class Element
         return $total / $ratings->count();
     }
 
-    /**
-     * --- FUNCIÓN MEJORADA ---
-     * Calcula la posición media comparando IDs para mayor seguridad.
-     */
     public function getAverageRank(Category $category): float
     {
         $totalPosition = 0;
         $count = 0;
 
-        // Obtenemos el ID de la categoría objetivo para comparar de forma segura
-        // (Esto evita problemas si las instancias de objeto son distintas en memoria)
         $targetCategoryId = $category->getId();
 
         foreach ($this->getUserRankings() as $ranking) {
-            // Verificamos que el ranking tenga categoría y que los IDs coincidan
             if ($ranking->getCategory() && $ranking->getCategory()->getId() === $targetCategoryId) {
                 $totalPosition += $ranking->getPosition();
                 $count++;
             }
         }
 
-        // Si nadie lo ha rankeado, devolvemos 999 para que salga el último
         if ($count === 0) {
             return 999.0;
         }
 
-        // Devolvemos redondeado a 2 decimales para que se vea limpio (ej: 1.50)
         return round($totalPosition / $count, 2);
     }
 }

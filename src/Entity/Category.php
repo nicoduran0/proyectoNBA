@@ -21,7 +21,6 @@ class Category
     /**
      * @var Collection<int, Element>
      */
-    // CAMBIO IMPORTANTE: Ahora es ManyToMany y apunta a 'categories' en Element
     #[ORM\ManyToMany(targetEntity: Element::class, mappedBy: 'categories')]
     private Collection $elements;
 
@@ -64,7 +63,6 @@ class Category
     {
         if (!$this->elements->contains($element)) {
             $this->elements->add($element);
-            // Sincronizamos con el otro lado (Element)
             $element->addCategory($this);
         }
 
@@ -74,7 +72,6 @@ class Category
     public function removeElement(Element $element): static
     {
         if ($this->elements->removeElement($element)) {
-            // Sincronizamos con el otro lado (Element)
             $element->removeCategory($this);
         }
 
