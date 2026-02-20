@@ -24,9 +24,16 @@ class Category
     #[ORM\ManyToMany(targetEntity: Element::class, mappedBy: 'categories')]
     private Collection $elements;
 
+    /**
+     * @var Collection<int, UserRanking>
+     */
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: UserRanking::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $userRankings;
+
     public function __construct()
     {
         $this->elements = new ArrayCollection();
+        $this->userRankings = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -76,5 +83,13 @@ class Category
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, UserRanking>
+     */
+    public function getUserRankings(): Collection
+    {
+        return $this->userRankings;
     }
 }
